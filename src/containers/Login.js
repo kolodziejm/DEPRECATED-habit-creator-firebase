@@ -16,6 +16,7 @@ const styles = theme => ({
         paddingLeft: 48,
         paddingBottom: 24,
         paddingRight: 48,
+        textAlign: 'center',
     },
     formHeader: {
         display: 'flex',
@@ -41,6 +42,8 @@ const styles = theme => ({
     },
     createAccount: {
         textDecoration: 'none',
+        textAlign: 'center',
+        display: 'inline',
         transition: 'all .2s ease-out',
         '&:hover': {
             color: theme.palette.secondary.dark
@@ -110,7 +113,6 @@ class Login extends Component {
                     </form>
                     <Typography
                         variant="body2"
-                        align="center"
                         className={classes.createAccount}
                         component={Link}
                         to="/register">Create account</Typography>
