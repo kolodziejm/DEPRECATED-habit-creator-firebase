@@ -4,6 +4,7 @@ import { Route, Switch, withRouter, Redirect } from 'react-router-dom';
 import fire from './fire';
 
 import Login from './containers/Login';
+import Register from './containers/Register';
 import theme from './theme';
 
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -18,6 +19,7 @@ class App extends Component {
         <CssBaseline />
         <Switch>
           {/* Rest of the paths, change them to protected later! */}
+          <Route path="/register" component={Register} />
           <Route path="/login" component={Login} />
           <Route path="/" />
         </Switch>
