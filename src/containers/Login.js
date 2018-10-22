@@ -11,7 +11,7 @@ const styles = theme => ({
     formContainer: {
         display: 'block',
         margin: '96px auto 0 auto',
-        maxWidth: 520,
+        maxWidth: '32.5rem',
         paddingTop: 32,
         paddingLeft: 48,
         paddingBottom: 24,
