@@ -32,7 +32,7 @@ const styles = theme => ({
     },
     input: {
         '&:not(:last-child)': {
-            marginBottom: 6
+            marginBottom: 16
         },
         width: '100%',
     },
