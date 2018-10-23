@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom';
 import { Typography, withStyles, AppBar, Toolbar, Paper, Avatar, TextField, Button } from '@material-ui/core';
 import AccountCircle from '@material-ui/icons/AccountCircle';
+import fire from '../fire';
 
 const styles = theme => ({
     icon: {
@@ -48,21 +49,44 @@ const styles = theme => ({
         '&:hover': {
             color: theme.palette.secondary.dark
         }
+    },
+    error: {
+        transition: 'all .8s',
+        color: 'red',
+        opacity: '100%',
+        marginBottom: 4
+    },
+    noError: {
+        color: 'transparent',
+        opacity: '0%',
+        marginBottom: 4
     }
 });
 class Login extends Component {
 
     state = {
         email: '',
-        password: ''
+        password: '',
+        errorMsg: ''
     }
 
-    inputChangedHandler = (e) => {
-        this.setState({ [e.target.name]: e.target.value });
-    }
+    inputChangedHandler = e => this.setState({ [e.target.name]: e.target.value });
 
-    login = () => {
-        console.log('login')
+    loginHandler = e => {
+        e.preventDefault();
+        if (this.state.email === '' || this.state.password === '') {
+            this.setState({ errorMsg: 'Fill in all fields' });
+            setTimeout(() => this.setState({ errorMsg: '' }), 5000);
+            return;
+        }
+
+        fire.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
+            .then(res => this.props.history.push('/home'))
+            .catch(err => {
+                console.log(err);
+                this.setState({ errorMsg: err.message });
+                setTimeout(() => this.setState({ errorMsg: '' }), 5000);
+            });
     }
 
 
@@ -86,6 +110,9 @@ class Login extends Component {
                         <Typography variant="h4">Login</Typography>
                     </header>
                     <form className={classes.form}>
+                        <Typography variant="subtitle2" className={this.state.errorMsg !== '' ? classes.error : classes.noError}>
+                            {this.state.errorMsg === '' ? '\u00A0' : this.state.errorMsg}
+                        </Typography>
                         <TextField
                             onChange={this.inputChangedHandler}
                             value={this.state.email}
@@ -108,8 +135,9 @@ class Login extends Component {
                             color="secondary"
                             variant="contained"
                             className={classes.loginBtn}
-                            onClick={this.login}
-                        >Login</Button>
+                            onClick={this.loginHandler}
+                        >Login
+                        </Button>
                     </form>
                     <Typography
                         variant="body2"
