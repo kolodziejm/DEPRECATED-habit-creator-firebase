@@ -112,7 +112,7 @@ class Navbar extends React.Component {
                     <Divider />
                     <ListItem button selected={this.props.navValue === 2} component={Link} to="/manage">Manage</ListItem>
                     <Divider />
-                    <ListItem button selected={this.props.navValue === 2} component={Link} to="/achievements">Achievements</ListItem>
+                    <ListItem button selected={this.props.navValue === 3} component={Link} to="/achievements">Achievements</ListItem>
                     <Divider />
                 </List>
             </div>

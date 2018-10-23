@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom';
-import { Typography, withStyles, AppBar, Toolbar, Paper, Avatar, TextField, Button } from '@material-ui/core';
+import { Typography, withStyles, AppBar, Toolbar, Paper, Avatar, TextField, Button, Fade } from '@material-ui/core';
 import PersonAdd from '@material-ui/icons/PersonAdd';
 import fire from '../fire';
 
@@ -50,15 +50,7 @@ const styles = theme => ({
         }
     },
     error: {
-        transition: 'all .8s',
-        color: 'red',
-        opacity: '100%',
-        marginBottom: 4
-    },
-    noError: {
-        color: 'transparent',
-        opacity: '0%',
-        marginBottom: 4
+        color: 'red'
     }
 });
 class Register extends Component {
@@ -114,9 +106,11 @@ class Register extends Component {
                         <Typography variant="h4" align="center">Create account</Typography>
                     </header>
                     <form className={classes.form}>
-                        <Typography variant="subtitle2" className={this.state.errorMsg !== '' ? classes.error : classes.noError}>
-                            {this.state.errorMsg === '' ? '\u00A0' : this.state.errorMsg}
-                        </Typography>
+                        <Fade in={this.state.errorMsg !== ''}>
+                            <Typography variant="subtitle2" className={classes.error}>
+                                {this.state.errorMsg === '' ? '\u00A0' : this.state.errorMsg}
+                            </Typography>
+                        </Fade>
                         <TextField
                             onChange={this.inputChangedHandler}
                             value={this.state.email}
@@ -151,6 +145,7 @@ class Register extends Component {
                             variant="contained"
                             className={classes.loginBtn}
                             onClick={this.createAccountHandler}
+                            type="submit"
                         >Register</Button>
                     </form>
                     <Typography
