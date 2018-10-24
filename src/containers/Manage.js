@@ -32,7 +32,8 @@ const styles = theme => ({
         justifyContent: 'center',
         alignItems: 'center',
         maxWidth: 960,
-        margin: '0 auto'
+        margin: '0 auto',
+        marginBottom: 32
     },
     habitItem: {
         padding: '8px 12px 8px 24px',
@@ -52,7 +53,12 @@ const styles = theme => ({
     },
     addDialogGroup: {
         display: 'flex',
-        flexDirection: 'row'
+        flexDirection: 'row',
+    },
+    btnContainer: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
     }
 });
 class Manage extends Component {
@@ -130,9 +136,16 @@ class Manage extends Component {
                         </Paper>
 
                     </List>
-                    <Button variant="contained" color="secondary" onClick={this.addDialogOpenHandler}>
-                        Add a habit
+                    <div className={classes.btnContainer}>
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            onClick={this.addDialogOpenHandler}
+                            className={classes.centeredBtn}
+                        >
+                            Add a habit
                     </Button>
+                    </div>
                     <Dialog
                         open={addDialog}
                         onClose={this.handleClose}
@@ -141,9 +154,6 @@ class Manage extends Component {
                         <DialogTitle id="form-dialog-title">Add a daily habit</DialogTitle>
                         <DialogContent>
                             <DialogContentText color="inherit">
-                                Enter a habit name and select the difficulty of it below. Make sure that you want to do this habit on a daily basis.
-                            </DialogContentText>
-                            <DialogContentText color="secondary">
                                 You'll have to do this habit daily in order to keep the streak!
                             </DialogContentText>
                             <TextField
