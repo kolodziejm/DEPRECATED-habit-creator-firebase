@@ -13,6 +13,12 @@ export default createMuiTheme({
             main: '#2962ff',
             dark: '#0039cb',
             contrastText: '#fff',
+        },
+        warning: {
+            main: '#f50057',
+            light: '#ff5983',
+            dark: '#bb002f',
+            contrastText: '#000'
         }
     },
     typography: {

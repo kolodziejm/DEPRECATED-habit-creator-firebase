@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { Typography, withStyles, AppBar, Toolbar, Paper, Avatar, TextField, Button, Fade } from '@material-ui/core';
 import PersonAdd from '@material-ui/icons/PersonAdd';
 import fire from '../fire';
@@ -77,7 +77,26 @@ class Register extends Component {
         }
 
         fire.auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
-            .then(res => this.props.history.push('/home'))
+            .then(res => {
+                const database = fire.database();
+                const lastActiveDayRef = database.ref(`users/${res.user.uid}/lastActiveDay`);
+                const lastActiveMonthRef = database.ref(`users/${res.user.uid}/lastActiveMonth`);
+                const lastActiveYearRef = database.ref(`users/${res.user.uid}/lastActiveYear`);
+
+                const date = new Date();
+
+                const today = date.getDate();
+                const thisMonth = date.getMonth() + 1;
+                const thisYear = date.getFullYear();
+
+                lastActiveDayRef.set(today);
+                lastActiveMonthRef.set(thisMonth);
+                lastActiveYearRef.set(thisYear);
+
+                localStorage.setItem('uid', res.user.uid);
+
+                this.props.history.push('/manage')
+            })
             .catch(err => {
                 console.log(err)
                 this.setState({ errorMsg: err.message });
@@ -89,7 +108,7 @@ class Register extends Component {
     render() {
 
         const { classes, theme } = this.props;
-        console.log(this.props)
+        console.log(this.state)
 
         return (
             <div>
@@ -160,4 +179,4 @@ class Register extends Component {
     }
 }
 
-export default withStyles(styles)(Register);
+export default withRouter(withStyles(styles)(Register));

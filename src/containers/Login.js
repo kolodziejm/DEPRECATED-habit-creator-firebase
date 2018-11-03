@@ -82,67 +82,68 @@ class Login extends Component {
     }
 
 
-    render() {
 
-        const { classes, theme } = this.props;
-        console.log(this.state)
+render() {
 
-        return (
-            <div>
-                <AppBar position="static" color="primary">
-                    <Toolbar>
-                        <Typography variant="h6">Habit Creator</Typography>
-                    </Toolbar>
-                </AppBar>
-                <Paper className={classes.formContainer}>
-                    <header className={classes.formHeader}>
-                        <Avatar className={classes.icon}>
-                            <AccountCircle />
-                        </Avatar>
-                        <Typography variant="h4">Login</Typography>
-                    </header>
-                    <form className={classes.form}>
-                        <Fade in={this.state.errorMsg !== ''}>
-                            <Typography variant="subtitle2" className={classes.error}>
-                                {this.state.errorMsg === '' ? '\u00A0' : this.state.errorMsg}
-                            </Typography>
-                        </Fade>
-                        <TextField
-                            onChange={this.inputChangedHandler}
-                            value={this.state.email}
-                            type="email"
-                            name="email"
-                            autoFocus={true}
-                            label="Email"
-                            placeholder="Email"
-                            variant="standard"
-                            className={classes.input} />
-                        <TextField
-                            onChange={this.inputChangedHandler}
-                            value={this.state.password}
-                            type="password"
-                            label="Password"
-                            name="password"
-                            placeholder="Password"
-                            className={classes.input} />
-                        <Button
-                            color="secondary"
-                            variant="contained"
-                            className={classes.loginBtn}
-                            onClick={this.loginHandler}
-                            type="submit"
-                        >Login
+    const { classes, theme } = this.props;
+    console.log(this.state)
+
+    return (
+        <div>
+            <AppBar position="static" color="primary">
+                <Toolbar>
+                    <Typography variant="h6">Habit Creator</Typography>
+                </Toolbar>
+            </AppBar>
+            <Paper className={classes.formContainer}>
+                <header className={classes.formHeader}>
+                    <Avatar className={classes.icon}>
+                        <AccountCircle />
+                    </Avatar>
+                    <Typography variant="h4">Login</Typography>
+                </header>
+                <form className={classes.form}>
+                    <Fade in={this.state.errorMsg !== ''}>
+                        <Typography variant="subtitle2" className={classes.error}>
+                            {this.state.errorMsg === '' ? '\u00A0' : this.state.errorMsg}
+                        </Typography>
+                    </Fade>
+                    <TextField
+                        onChange={this.inputChangedHandler}
+                        value={this.state.email}
+                        type="email"
+                        name="email"
+                        autoFocus={true}
+                        label="Email"
+                        placeholder="Email"
+                        variant="standard"
+                        className={classes.input} />
+                    <TextField
+                        onChange={this.inputChangedHandler}
+                        value={this.state.password}
+                        type="password"
+                        label="Password"
+                        name="password"
+                        placeholder="Password"
+                        className={classes.input} />
+                    <Button
+                        color="secondary"
+                        variant="contained"
+                        className={classes.loginBtn}
+                        onClick={this.loginHandler}
+                        type="submit"
+                    >Login
                         </Button>
-                    </form>
-                    <Typography
-                        variant="body2"
-                        className={classes.createAccount}
-                        component={Link}
-                        to="/register">Create account</Typography>
-                </Paper>
-            </div>
-        )
-    }
+                </form>
+                <Typography
+                    variant="body2"
+                    className={classes.createAccount}
+                    component={Link}
+                    to="/register">Create account</Typography>
+            </Paper>
+        </div>
+    )
+}
 }
 
 export default withStyles(styles)(Login);

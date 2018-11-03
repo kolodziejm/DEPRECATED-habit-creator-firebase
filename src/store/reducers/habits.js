@@ -1,17 +1,15 @@
 import * as actionTypes from '../actionTypes';
 
 const initialState = {
-    authenticated: false,
-    uid: ''
+    habits: [],
 }
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
-        case actionTypes.GET_UID:
+        case actionTypes.GET_HABITS:
             return {
                 ...state,
-                uid: action.uid,
-                authenticated: true
+                habits: action.habits
             }
 
         default:

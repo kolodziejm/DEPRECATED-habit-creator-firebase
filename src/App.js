@@ -1,7 +1,13 @@
 import React, { Component } from 'react';
 import { Route, Switch, withRouter, Redirect } from 'react-router-dom';
 
+import { connect } from 'react-redux';
+
 import fire from './fire';
+import database from './utils/database';
+
+import * as authActions from './store/actions/auth';
+import * as habitsActions from './store/actions/habits';
 
 import Login from './containers/Login';
 import Home from './containers/Home';
@@ -20,6 +26,18 @@ class App extends Component {
   authListener = () => {
     fire.auth().onAuthStateChanged(user => {
       if (user) {
+        const habitsRef = database.ref(`users/${user.uid}/habits`);
+        habitsRef.on('value', data => {
+          const habits = data.val();
+          const habitsArray = [];
+          for (let key in habits) {
+            habitsArray.push({ id: key, name: habits[key].name, difficulty: habits[key].difficulty });
+          }
+          this.props.onGetHabits(habitsArray);
+        })
+
+        this.props.onGetUid(user.uid);
+
         this.props.history.push('/home');
         console.log(user)
       }
@@ -49,4 +67,11 @@ class App extends Component {
   }
 }
 
-export default withRouter(App);
+const mapDispatchToProps = dispatch => {
+  return {
+    onGetUid: (uid) => dispatch(authActions.getUid(uid)),
+    onGetHabits: (habits) => dispatch(habitsActions.getHabits(habits))
+  }
+}
+
+export default withRouter(connect(null, mapDispatchToProps)(App));

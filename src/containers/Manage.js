@@ -1,7 +1,10 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux';
+
+import database from '../utils/database';
 
 import Navbar from '../components/Navbar';
-import { Button, withStyles, Typography, Paper, List } from '@material-ui/core';
+import { Button, withStyles, Typography, Paper, List, Snackbar, } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/DeleteForever';
 
@@ -65,23 +68,64 @@ class Manage extends Component {
 
     state = {
         addDialog: false,
+        addDialogSnackbar: false,
+        deleteDialog: false,
         newHabitName: '',
-        newHabitDiff: 'medium'
+        newHabitDiff: 'medium',
+        selectedHabitName: '',
+        selectedHabitId: '',
+        selectedHabitDiff: ''
     }
 
     inputChangedHandler = e => this.setState({ [e.target.name]: e.target.value });
 
     addDialogOpenHandler = () => this.setState({ addDialog: true });
 
-    handleAddDialogChange = e => this.setState({ newHabitDiff: e.target.value });
+    deleteDialogOpenHandler = (id, name) => {
+        this.setState({ deleteDialog: true, selectedHabitName: name, selectedHabitId: id });
+    }
 
-    closeDialogHandler = () => this.setState({ addDialog: false, newHabitName: '', newHabitDiff: 'medium' });
+    handleAddDialogRadio = e => this.setState({ newHabitDiff: e.target.value });
+
+    closeDialogHandler = () => this.setState({ addDialog: false, deleteDialog: false, newHabitName: '', newHabitDiff: 'medium' });
+
+    closeSnackbarHandler = () => this.setState({ addDialogSnackbar: false })
+
+
+    createNewHabit = (e) => {
+        e.preventDefault();
+        if (this.state.newHabitName === '') {
+            // dodac error handling
+            return;
+        }
+
+        const dbRef = database.ref(`users/${this.props.uid}/habits`);
+        dbRef.push({ name: this.state.newHabitName, difficulty: this.state.newHabitDiff, finished: false }) // FINISH
+        this.setState({ addDialog: false, newHabitName: '', newHabitDiff: 'medium', addDialogSnackbar: true });
+    }
 
 
     render() {
         const { classes } = this.props;
-        const { addDialog } = this.state;
-        console.log(this.state)
+        const { addDialog, deleteDialog } = this.state;
+
+        const habitItems = this.props.habits.map(habit => {
+            return (
+                <Paper className={classes.habitItem} key={habit.id}>
+                    <Typography
+                        variant="h6"
+                        align="center"
+                        className={classes.habitText}>{habit.name}</Typography>
+                    <div className={classes.habitIconWrapper}>
+                        <Button variant="fab" mini color="secondary" style={{ marginRight: 16 }}>
+                            <EditIcon />
+                        </Button>
+                        <Button variant="fab" mini color="primary" onClick={this.deleteDialogOpenHandler}>
+                            <DeleteIcon />
+                        </Button>
+                    </div>
+                </Paper>);
+        })
 
         return (
             <div className={classes.root}>
@@ -92,49 +136,7 @@ class Manage extends Component {
                         align="center"
                         className={classes.mainTitle}>Your current daily habits</Typography>
                     <List className={classes.list}>
-                        <Paper className={classes.habitItem}>
-                            <Typography
-                                variant="h6"
-                                align="center"
-                                className={classes.habitText}>Some really long habit name for testing</Typography>
-                            <div className={classes.habitIconWrapper}>
-                                <Button variant="fab" mini color="secondary" style={{ marginRight: 16 }}>
-                                    <EditIcon />
-                                </Button>
-                                <Button variant="fab" mini color="primary">
-                                    <DeleteIcon />
-                                </Button>
-                            </div>
-                        </Paper>
-                        <Paper className={classes.habitItem}>
-                            <Typography
-                                variant="h6"
-                                align="center"
-                                className={classes.habitText}>Another really long habit name for testing</Typography>
-                            <div className={classes.habitIconWrapper}>
-                                <Button variant="fab" mini color="secondary" style={{ marginRight: 16 }}>
-                                    <EditIcon />
-                                </Button>
-                                <Button variant="fab" mini color="primary">
-                                    <DeleteIcon />
-                                </Button>
-                            </div>
-                        </Paper>
-                        <Paper className={classes.habitItem}>
-                            <Typography
-                                variant="h6"
-                                align="center"
-                                className={classes.habitText}>Short one here</Typography>
-                            <div className={classes.habitIconWrapper}>
-                                <Button variant="fab" mini color="secondary" style={{ marginRight: 16 }}>
-                                    <EditIcon />
-                                </Button>
-                                <Button variant="fab" mini color="primary">
-                                    <DeleteIcon />
-                                </Button>
-                            </div>
-                        </Paper>
-
+                        {habitItems}
                     </List>
                     <div className={classes.btnContainer}>
                         <Button
@@ -172,7 +174,7 @@ class Manage extends Component {
                                 name="difficulty"
                                 className={classes.addDialogGroup}
                                 value={this.state.newHabitDiff}
-                                onChange={this.handleAddDialogChange}
+                                onChange={this.handleAddDialogRadio}
                             >
                                 <FormControlLabel
                                     value="easy"
@@ -198,8 +200,38 @@ class Manage extends Component {
                             <Button onClick={this.closeDialogHandler} color="primary">
                                 Cancel
                             </Button>
-                            <Button onClick={this.handleClose} color="secondary" variant="contained">
+                            <Button onClick={this.createNewHabit} color="secondary" variant="contained">
                                 Add
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
+                    <Snackbar
+                        anchorOrigin={{
+                            vertical: "bottom",
+                            horizontal: "center"
+                        }}
+                        open={this.state.addDialogSnackbar}
+                        autoHideDuration={6000}
+                        onClose={this.closeSnackbarHandler}
+                        message={<span>Item successfully added</span>}
+                    />
+                    <Dialog
+                        open={deleteDialog}
+                        onClose={this.handleClose}
+                        aria-labelledby="form-dialog-title"
+                    >
+                        <DialogTitle id="form-dialog-title">Delete a habit</DialogTitle>
+                        <DialogContent>
+                            <DialogContentText color="inherit">
+                                Are you sure that you want to delete this habit?
+                            </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={this.closeDialogHandler} color="primary">
+                                Cancel
+                            </Button>
+                            <Button onClick={this.handleClose} color="secondary" variant="contained">
+                                Delete
                             </Button>
                         </DialogActions>
                     </Dialog>
@@ -210,4 +242,11 @@ class Manage extends Component {
     }
 }
 
-export default withStyles(styles, { withTheme: true })(Manage);
+const mapStateToProps = state => {
+    return {
+        uid: state.auth.uid,
+        habits: state.habits.habits
+    }
+}
+
+export default withStyles(styles, { withTheme: true })(connect(mapStateToProps)(Manage));
